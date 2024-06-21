@@ -13,7 +13,6 @@
   },
   "scripts": {
     "build": "rm -rf dist && mkdir dist && pnpm run build:cjs && pnpm run build:esm && pnpm run build:types",
-    "generate": "just ../../../api/up && just ../../../api/wait && pdm run -p ../../python/api-client-generator generate --openverse-api-url http://localhost:50280 && cp ../../python/api-client-generator/out/*.ts ./src/generated",
     "build:cjs": "esbuild ./src/**/* --packages=external --sourcemap --format=cjs --out-extension:.js=.cjs --outdir=dist",
     "build:esm": "esbuild ./src/**/* --packages=external --sourcemap --format=esm --out-extension:.js=.mjs --outdir=dist",
     "build:types": "tsc -p ./tsconfig.prod.json",

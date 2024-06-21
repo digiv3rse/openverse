@@ -15,6 +15,10 @@ from openverse_api_client_generator.components import (
 from openverse_api_client_generator.template_env import templates
 
 
+OUT = Path(__file__).parents[2] / "out"
+OUT.mkdir(exist_ok=True)
+
+
 def get_models(
     component_schemas: dict, model_names: list[str]
 ) -> tuple[dict[str, Model], dict[str, TypeAlias]]:
@@ -111,6 +115,6 @@ def main(openverse_api_url: str) -> None:
                 routes=routes,
             )
 
-            out = Path(__file__).parents[1] / "out" / f"{name}.{filetype}"
-            out.unlink(missing_ok=True)
-            out.write_text(rendered)
+            file_out = OUT / f"{name}.{filetype}"
+            file_out.unlink(missing_ok=True)
+            file_out.write_text(rendered)

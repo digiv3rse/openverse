@@ -102,12 +102,20 @@ class Property:
         )
 
     @property
-    def py_property_string(self) -> str:
+    def py_parameter_string(self) -> str:
         return "{name}:{nullable} {type}{default}".format(
             name=self.name,
-            nullable=" None |" if self.nullable or not self.required else "",
+            nullable=" None |" if self.nullable else "",
             type=self.py_type_string,
-            default=" = None" if not self.required else "",
+            default=" | Empty = EMPTY" if not self.required else "",
+        )
+
+    @property
+    def py_property_string(self) -> str:
+        inner_type = f"{'None | ' if self.nullable else ''}{self.py_type_string}"
+        return "{name}: {type}".format(
+            name=self.name,
+            type=inner_type if self.required else f"typing.NotRequired[{inner_type}]",
         )
 
 
@@ -161,8 +169,54 @@ class Route:
         return self.response is not bytes
 
     @property
+    def required_query_params(self) -> list[Property]:
+        return [p for p in self.query_params.values() if p.required]
+
+    @property
+    def optional_query_params(self) -> list[Property]:
+        return [p for p in self.query_params.values() if not p.required]
+
+    @property
     def has_required_query_params(self) -> bool:
-        return any([p.required for p in self.query_params.values()])
+        return any(self.required_query_params)
+
+    @property
+    def required_body_params(self) -> list[Property]:
+        if not self.request_body:
+            return []
+
+        return [p for p in self.request_body.properties.values() if p.required]
+
+    @property
+    def optional_body_params(self) -> list[Property]:
+        if not self.request_body:
+            return []
+
+        return [p for p in self.request_body.properties.values() if not p.required]
+
+    @property
+    def has_required_body_params(self) -> bool:
+        return any(self.required_body_params)
+
+    @property
+    def py_route_methodname(self) -> str:
+        if self.path in {"/v1/audio/", "/v1/images/"}:
+            path = self.path + "search/"
+        elif "{identifier}" in self.path:
+            # e.g., waveform endpoints
+            # should be `get_v1_audio_waveform`
+            path = self.path.replace("{identifier}/", "")
+        else:
+            path = self.path
+
+        # trim the leading and trailing _'s
+        path = path.replace("images", "image").replace("/", "_")[1:-1]
+
+        return path
+
+    @property
+    def py_cast_content(self) -> str:
+        return f"typing.cast({py_type_string(self.response)}, content)"
 
 
 def python_type_from_schema(schema: dict) -> type | TypeAlias:
