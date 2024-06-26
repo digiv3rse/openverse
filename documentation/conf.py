@@ -103,6 +103,11 @@ redirects = {
     "meta/contribution/maintainer_tasks": "/general/contribution/maintainer_tasks.html",
     "meta/contribution/codespell": "/general/contribution/codespell.html",
     "meta/contribution/good_first_and_help_wanted_issues": "/general/contribution/good_first_and_help_wanted_issues.html",
+    "frontend/guides/deploy": "/meta/release_and_deployment/runbooks/frontend.html",
+    "api/guides/deploy": "/meta/release_and_deployment/runbooks/api.html",
+    "catalog/guides/deploy": "/meta/release_and_deployment/runbooks/catalog.html",
+    "catalog/guides/deployment": "/meta/release_and_deployment/index.html#catalog",
+    "ingestion_server/guides/deploy": "/meta/release_and_deployment/runbooks/ingestion_server.html",
 }
 
 myst_enable_extensions = ["linkify"]
