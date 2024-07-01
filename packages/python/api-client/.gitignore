@@ -1,0 +1,3 @@
+src/openverse_api_client/_generated/*
+out
+schema.yaml
